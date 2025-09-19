@@ -108,3 +108,22 @@
     - role: docker-compose
       tags: compose,updates
     #- role: artis3n.tailscale
+
+# create ssh key and copy to pbs
+# for apparmor error in LXC, either disable apprmor or add 'lxc.apparmor.profile: unconfined'
+# in the LXC config
+
+# for zerotier/tailscale, need to allow tun/tap device permissions,
+# lxc.cgroup2.devices.allow: c 10:200 rwm
+# lxc.mount.entry: /dev/net dev/net none bind,create=dir
+# ----------------------------------------------------------------------------------------
+- name: LXC proxy/vpn play
+  hosts: proxy
+  become: true
+  vars_files:
+    - 'vars/vault.yml'
+    - 'group_vars/{{ ansible_os_family }}.yml'
+  roles:
+    - role: taktus.fzf
+    # - role: artis3n.tailscale # creating issues, need to run up commands with relevent flags and route
+    #  tags: tailscale
