@@ -95,3 +95,16 @@
       #tags: tailscale
     - role: backup-script
       tags: backup
+
+# ----------------------------------------------------------------------------------------
+- name: Oracle public VM play
+  hosts: oraclevmpublic
+  become: true
+  vars_files:
+    - 'group_vars/{{ ansible_os_family }}.yml'
+    - 'vars/vault.yml'
+  roles:
+    - role: geerlingguy.docker
+    - role: docker-compose
+      tags: compose,updates
+    #- role: artis3n.tailscale
