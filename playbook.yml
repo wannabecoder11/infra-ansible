@@ -139,3 +139,19 @@
   roles:
     - role: artis3n.tailscale # creating issues, need to run up commands with relevent flags and route
       tags: tailscale
+
+# ----------------------------------------------------------------------------------------
+- name: Basic tasks for all linux systems
+  hosts: linux
+  become: true
+  roles:
+    - role: taktus.fzf
+    - role: jahrik.yay
+      when: ansible_facts['os_family'] == 'Archlinux'
+    - role: timezone
+    - role: grog.package
+    - role: run-updates
+      tags: updates
+  vars_files:
+    - 'vars/vault.yml'
+    - 'group_vars/{{ ansible_os_family }}.yml'
