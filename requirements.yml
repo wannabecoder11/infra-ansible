@@ -1,0 +1,38 @@
+# $ ansible-galaxy install -r requirements.yml
+roles:
+- ironicbadger.docker_compose_generator 
+- ironicbadger.bash_aliases
+- ironicbadger.figurine
+- ironicbadger.apprise_boot_notification
+- ironicbadger.hddtemp
+- ironicbadger.snapraid
+- ironicbadger.proxmox_nag_removal
+- geerlingguy.docker
+- geerlingguy.docker_arm
+- geerlingguy.security
+- geerlingguy.nfs
+- geerlingguy.ntp
+- geerlingguy.pip
+
+- geerlingguy.github-users
+- artis3n.tailscale
+- grog.package
+- rossmcdonald.telegraf
+- aisbergg.snapper
+- jahrik.yay
+- robertdebock.autofs
+- gikeymarcia.neovim
+- diademiemi.flatpak
+- alvistack.hibernate
+- petermosmans.customize-gnome
+- taktus.fzf
+collections:
+- prometheus.prometheus
+- vladgh.samba
+- kewlfft.aur
+- chocolatey.chocolatey
+- ansible.posix
+- community.docker
+- artis3n.tailscale
+# submodules
+## https://github.com/ironicbadger/ansible-role-caddy

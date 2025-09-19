@@ -1,0 +1,37 @@
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
+
+# Ignore Ansible facts cache
+fact_cache/
+
+# Ignore Ansible retry files created when a playbook run fails
+*.retry
+
+# Ignore local environment and variable files
+*.vault
+*.secret
+*.env
+*.local
+
+
+# Ignore logs
+*.log
+
+# Ignore temporary and backup files
+*.swp
+*~
+*.bak
+
+# Ignore IDE/editor files
+.vscode/
+.ansible/
+.idea/
+*.iml
+
+vault/
+
+# Ignore SSH keys or private certificates if accidentally checked in
+*.pem
+*.key
+
