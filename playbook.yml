@@ -50,3 +50,31 @@
     - role: gikeymarcia.neovim
 #    - role: intel-iGPU-driver
 #      tags: gpu
+
+
+# ----------------------------------------------------------------------------------------
+- name: PVE play
+  hosts: pve
+  become: true
+  vars_files:
+    - 'group_vars/{{ ansible_os_family }}.yml'
+    - 'vars/vault.yml'
+  roles:
+    - role: ironicbadger.proxmox_nag_removal
+    - role: geerlingguy.nfs
+    - role: ironicbadger.snapraid
+    - role: generate-fstab
+    - role: file-sharing
+    - role: aisbergg.snapper
+    - role: geerlingguy.docker
+    - role: hd-idle
+    - role: cron
+    - role: btrbk
+    - role: docker-compose
+      tags: compose,updates
+    - role: artis3n.tailscale
+      tags: tailscale
+    - role: backup-script
+      tags: backup
+    - role: gikeymarcia.neovim
+      tags: nvim
