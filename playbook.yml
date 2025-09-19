@@ -127,3 +127,15 @@
     - role: taktus.fzf
     # - role: artis3n.tailscale # creating issues, need to run up commands with relevent flags and route
     #  tags: tailscale
+
+# ----------------------------------------------------------------------------------------
+
+- name: Shikamaru proxy/vpn play
+  hosts: shikamaru
+  become: true
+  vars_files:
+    - 'vars/vault.yml'
+    - 'group_vars/{{ ansible_os_family }}.yml'
+  roles:
+    - role: artis3n.tailscale # creating issues, need to run up commands with relevent flags and route
+      tags: tailscale
