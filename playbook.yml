@@ -21,3 +21,32 @@
       tags: nvim
     - role: intel-iGPU-driver
       tags: gpu
+
+- name: Acer-lappi Fedora play
+  hosts: acer-lappi-fedora
+  become: true
+  vars_files:
+    - 'vars/vault.yml'
+    - "group_vars/{{ ansible_facts['os_family'] }}.yml"
+  roles:
+    - role: geerlingguy.pip
+    - role: taktus.fzf
+    - role: jahrik.yay
+      when: ansible_facts['os_family'] == 'Archlinux'
+    - role: grog.package
+      tags: grog
+      ansible_pkg_mgr: dnf
+    - role: base
+    - role: snaps
+      tags: snaps
+    - role: workstation
+    - role: petermosmans.customize-gnome
+      tags: gnome
+    - role: geerlingguy.nfs
+    - role: generate-fstab
+    - role: geerlingguy.docker
+    - role: "diademiemi.flatpak"
+      tags: flatpak
+    - role: gikeymarcia.neovim
+#    - role: intel-iGPU-driver
+#      tags: gpu
