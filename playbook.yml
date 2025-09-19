@@ -78,3 +78,20 @@
       tags: backup
     - role: gikeymarcia.neovim
       tags: nvim
+
+# ----------------------------------------------------------------------------------------
+- name: Oracle VM play
+  hosts: oraclevm
+  become: true
+  vars_files:
+    - 'group_vars/{{ ansible_os_family }}.yml'
+    - 'vars/vault.yml'
+  roles:
+    - role: geerlingguy.docker
+    - role: generate-fstab
+    - role: docker-compose
+      tags: compose,updates
+    #- role: artis3n.tailscale
+      #tags: tailscale
+    - role: backup-script
+      tags: backup
