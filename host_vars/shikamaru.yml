@@ -1,0 +1,2 @@
+hostname: shikamaru
+tailscale_args: " --hostname={{ hostname }} --reset --operator={{ primary_user }} --accept-dns=false"

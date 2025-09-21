@@ -1,0 +1,215 @@
+hostname: pve
+#grog.package
+package_update_cache: yes
+package_list:
+  - name: bash-completion
+  - name: curl
+  - name: git
+  - name: htop
+  - name: iftop
+  - name: iotop
+  - name: '{{ lm_sensors_package }}'
+  - name: mc
+  - name: ncdu
+  - name: net-tools
+  - name: '{{ nfs_server_package }}'
+  - name: nmap
+  - name: '{{ openssh_package }}'
+  - name: python3
+  - name: smartmontools
+  - name: sudo
+  - name: tmux
+  - name: tree
+  - name: wget
+  - name: '{{ nfs_server_package }}'
+  - name: '{{ mergerfs_package }}'   #no mergerfs package in redhat based repos, hence put htop in the var
+  - name: snapper
+  - name: sudo
+  - name: '{{ hd_idle_package }}'
+  - name: snapraid
+#  - name: zerotier-one
+  - name: '{{ cron_package | default (cron) }}'
+  - name: neovim
+  - name: nano
+  - name: restic
+
+## snapraid
+snapraid_config_excludes:
+  - "*.unrecoverable"
+  - "/tmp/"
+  - "/lost+found/"
+ # - "downloads/"
+  - "appdata/"
+  - "/mnt/disk7/umbrel/"
+  - "*.!sync"
+  - ".AppleDouble"
+  - "._AppleDouble"
+  - ".DS_Store"
+  - "._.DS_Store"
+  - ".Thumbs.db"
+  - ".fseventsd"
+  - ".Spotlight-V100"
+  - ".TemporaryItems"
+  - ".Trashes"
+  - ".AppleDB"
+  - ".nfo"
+  - "/private"
+  - "/snippets/"
+  - "/template/"
+  - "/Watch folder/"
+  - "thumbs/"
+  - "thumbs/"
+  - "/Immich/upload/thumbs/"
+  - "/.snapshots/"
+  - "/Backup/"
+  - "/Movies/"
+  - "/Series/"
+  - "/images/"
+  - "/Downloads/"
+  - "/dump/"
+  - "/green/"
+  - ".git/"
+
+# geerlingguy.nfs
+nfs_exports: [ 
+  "/media/Media 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash,fsid=daf4f409-cf2a-436a-ace5-1337d756378c) 10.147.17.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=198cf32f-59aa-4ccb-99cd-2878760707b6) 100.100.144.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=293a37f4-ea34-4705-992d-0e4b154c8120)",
+  "/media/Personal 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash,fsid=526f2477-b984-457c-a825-e494c5f52315) 10.147.17.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=f28ae69f-b4b0-4003-84fd-c352698441ee) 100.100.144.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=fe1b83a9-ff13-4a1a-b3de-f1f76f7776b2)",
+#"/mnt/docker 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash,fsid=c4836157-87c9-4160-a30d-c53d5108f277)",
+#   "/mnt/docker 10.147.17.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=fb0367de-6c54-4555-99bb-db84aacb2d0e)"
+]
+
+# ironicbadger.snapraid & fstab genertor roles
+snapraid_runner: true
+
+snapraid_bin_path: /usr/bin/snapraid
+snapraid_parity_disks:
+- { path: /mnt/Parity-Toshiba, diskbyid: UUID=b9dc0928-66d7-4a0d-a906-4b94c72bf27c, fs: btrfs, opts: "defaults,subvol=@parity", content: false }
+snapraid_data_disks:
+- { path: /mnt/Personal-Green, diskbyid: UUID=aa87cb4f-6f3a-48ed-833a-b0b3d9ad6e35, fs: btrfs, opts: "defaults,subvol=@personal", content: true }
+- { path: /mnt/Personal-Blue, diskbyid: UUID=ce884d65-c4da-4e21-b289-862c4a3a0672, fs: btrfs, opts: "defaults,subvol=@personal", content: true }
+
+
+extra_mountpoints:
+  - { path: /mnt/Media-Green, diskbyid: UUID=aa87cb4f-6f3a-48ed-833a-b0b3d9ad6e35, fs: btrfs, opts: "defaults,subvol=@media"}
+  - { path: /mnt/Media-Blue, diskbyid: UUID=ce884d65-c4da-4e21-b289-862c4a3a0672, fs: btrfs, opts: "defaults,subvol=@media"}
+  - { path: /mnt/Media-Toshiba, diskbyid: UUID=b9dc0928-66d7-4a0d-a906-4b94c72bf27c, fs: btrfs, opts: "defaults,subvol=@media"}
+  - { path: /docker, diskbyid: /dev/pve/dockerthinvolume, fs: btrfs, opts: "defaults,subvol=@docker"}
+  - { path: /mnt/dockerthinvolume, diskbyid: /dev/pve/dockerthinvolume, fs: btrfs, opts: "defaults,subvol=@docker"}
+
+
+fstab_mergerfs:
+   - { source: "/mnt/Media*", mountpoint: "/media/Media", fs: fuse.mergerfs, opts: "defaults,nonempty,allow_other,use_ino,moveonenospc=true,category.create=epmfs,dropcacheonclose=true,noforget,inodecalc=path-hash,fsname=Media-mergerfs" }  
+   - { source: "/mnt/Personal*", mountpoint: "/media/Personal", fs: fuse.mergerfs, opts: "defaults,nonempty,allow_other,use_ino,moveonenospc=true,category.create=mspmfs,dropcacheonclose=true,noforget,inodecalc=path-hash,fsname=Personal-mergerfs" } 
+
+
+
+
+# m4rcu5nl/ansible-role-zerotier
+zerotier_member_ip_assignments: 
+  - "10.147.17.124"
+
+# aisbergg.snapper
+
+snapper_templates:
+      default:
+        TIMELINE_CREATE: false
+        TIMELINE_LIMIT_HOURLY: 2
+        TIMELINE_LIMIT_DAILY: 12
+snapper_configs:
+      # - path: /mnt/Media-Blue
+      #   name: Media-Blue
+      #   vars:
+      #     TIMELINE_CREATE: false
+      #     TIMELINE_CLEANUP: true
+      #     NUMBER_LIMIT: 24
+
+      # - path: /mnt/Media-Green
+      #   name: Media-Green
+      #   vars:
+      #     TIMELINE_CREATE: false
+      #     TIMELINE_CLEANUP: true
+      #     NUMBER_LIMIT: 24
+
+      # - path: /mnt/Media-Toshiba
+      #   name: Media-Toshiba
+      #   vars:
+      #     TIMELINE_CREATE: false
+      #     TIMELINE_CLEANUP: true
+      #     NUMBER_LIMIT: 24
+
+      - path: /mnt/Personal-Blue
+        name: Personal-Blue
+        vars:
+          TIMELINE_CREATE: false
+          TIMELINE_CLEANUP: true
+          NUMBER_LIMIT: 42 
+
+      - path: /mnt/Personal-Green
+        name: Personal-Green
+        vars:
+          TIMELINE_CREATE: false
+          TIMELINE_CLEANUP: true
+          NUMBER_LIMIT: 42
+      - path: /mnt/docker
+        name: docker
+        vars:
+          TIMELINE_CREATE: false
+          TIMELINE_CLEANUP: true
+          NUMBER_LIMIT: 42
+
+
+# vladgh.samba.server
+
+samba_netbios_name: '{{ hostname }}'
+samba_server_string: '{{ hostname }}'
+samba_workgroup: WORKGROUP
+samba_load_printers: false
+samba_log: /var/log/samba.log
+samba_log_size: 60000
+
+samba_users:
+ - name: '{{ primary_user }}'
+   password: '{{ primary_user_password }}'
+ - name: '{{ mediauser }}'
+   password: '{{ mediauser_password }}'
+samba_shares:
+ - name: Media
+   comment: 'Media folder'
+   valid_users: '{{ mediauser }},{{ primary_user }}'
+   write_list: '{{ mediauser }},{{ primary_user }}'
+   group: '{{ mediauser }}'
+   browseable: 'no'
+
+
+#geerlingguy.pip
+pip_install_packages:
+  - name: setuptools
+  - name: docker
+  - name: "cython<3.0.0"
+  - name: "pyyaml==5.3.1"
+  - name: docker-compose
+
+
+#healthcheck_io_host: https://uptime.orrk.duckdns.org/api/push/
+#snapraid_healthcheck_io_host: https://uptime.orrk.duckdns.org/api/push/
+healthcheck_io_host: https://hc-ping.com
+snapraid_io_host: https://hc-ping.com
+
+cron:
+  - { user: root, name: snapper_cron, hour: "*/3", job: "for i in $(ls /etc/snapper/configs/); do snapper -c $i create -c number; done", healthcheck_io_uuid: '{{ hc_snapper_cron_uuid }}'}
+
+# - { user: root, name: 'pve /etc rsync cron', hour: 00, minute: 01, job: 'rsync -aAXHv /etc '{{ primay_user}}'@10.147.17.125:/docker/pve-backup', healthcheck_io_uuid: ""}
+  - { user: root, name: 'btrbk-acer-lappi-snapshot', hour: "*/3", minute: "2", job: "/usr/bin/btrbk -c /etc/btrbk/btrbk-acer-lappi.conf run", healthcheck_io_uuid: "{{ hc_btrbk-acer-lappi-snapshot_uuid }}"}
+
+# cron_reboot:
+ #- { name: "add cron for pci passthroug",user: root, job: "echo -n 1 > /sys/devices/pci0000\:00/0000\:00\:1a.0/remove"}
+
+
+tailscale_args: "--hostname={{hostname}} --reset --accept-dns=false"
+
+
+
+#backup-script
+backup_script: 
+ - backup-daily.sh
+ - backup-alternates.sh
