@@ -1,0 +1,42 @@
+userdir: acer
+# windows_desktop_packages_version:
+#   - notepadplusplus:
+#     name: notepadplusplus
+#     state: present
+#     version: 7.4.2
+#     force: True
+
+
+windows_desktop_packages_latest:
+  - teamviewer
+  - synctrayzor
+  - chocolatey
+  - firefox
+  - 7zip.install
+  - vlc
+  - googlechrome
+  - notion
+  - obs-studio
+  - vscode
+  - putty
+  - audacity
+  - draw.io
+  - jellyfin-media-player
+  - paint.net
+  - tailscale
+  - winscp
+  - zerotier
+  - git
+  - golang
+
+
+syncthing_folders:
+  - Paperless
+  - Youtube
+  - 1drive
+  - Downloads
+  - Documents
+  - Pictures
+  - Desktop
+
+

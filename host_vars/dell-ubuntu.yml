@@ -91,7 +91,7 @@ apt_repository_repositories:
     keyring: /etc/apt/trusted.gpg.d/fastfetch.gpg
 
 #groptg.package
-package_update_cache: yes
+package_update_cache: true
 #package_list:
 apt_package_list:
   - name: bash-completion

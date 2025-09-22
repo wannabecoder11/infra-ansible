@@ -1,0 +1,180 @@
+---
+hostname: acer-lappi
+# variables for various configs/dotfiles
+
+enviornment: |
+  'PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/opt/python/bin"'
+
+# apt
+apt_repository_repositories:
+  - repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com jammy main"
+    key: https://apt.releases.hashicorp.com/gpg
+    keyring: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+
+  - repo: "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main"
+    key: https://dl-ssl.google.com/linux/linux_signing_key.pub
+
+  - repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"
+    key: "https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg"
+    keyring: "/usr/share/keyrings/brave-browser-archive-keyring.gpg"
+
+  - repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /"
+    key: https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key
+    keyring: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+  - repo: "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main"
+    key: "https://packages.microsoft.com/keys/microsoft.asc"
+    keyring: "/etc/apt/keyrings/packages.microsoft.gpg"
+
+  #  - repo: ppa:zhangsongcui3371/fastfetch
+  - repo: "deb [signed-by=/etc/apt/trusted.gpg.d/fastfetch.gpg] https://ppa.launchpadcontent.net/zhangsongcui3371/fastfetch/ubuntu noble main"
+    key: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xeb65ee19d802f3eb1a13cfe47e2e5cb4d4865f21"
+    keyring: /etc/apt/trusted.gpg.d/fastfetch.gpg
+  - repo: "deb-src [signed-by=/etc/apt/trusted.gpg.d/fastfetch.gpg] https://ppa.launchpadcontent.net/zhangsongcui3371/fastfetch/ubuntu noble main"
+    key: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xeb65ee19d802f3eb1a13cfe47e2e5cb4d4865f21"
+    keyring: /etc/apt/trusted.gpg.d/fastfetch.gpg
+
+#groptg.package
+package_update_cache: yes
+#apt_package_list:
+ansible_pkg_mgr: dnf
+package_list:
+  - name: bash-completion
+  - name: curl
+  - name: git
+  - name: htop
+  - name: iftop
+  - name: iotop
+  - name: "{{ lm_sensors_package }}"
+  - name: mc
+  - name: ncdu
+  - name: net-tools
+  - name: "{{ nfs_server_package }}"
+  - name: nmap
+  - name: "{{ openssh_package }}"
+  - name: "{{ python_package }}"
+  - name: smartmontools
+  - name: sudo
+  - name: tmux
+  - name: tree
+  - name: wget
+  - name: "{{ nfs_server_package }}"
+  - name: snapper
+  - name: sudo
+  - name: "{{ cron_package | default (cron) }}"
+  - name: nano
+  - name: ansible
+  - name: google-chrome-stable
+  - name: vlc
+  - name: remmina
+  - name: syncthing
+  #  - name: apt-transport-https
+  - name: ca-certificates
+  - name: gnupg
+  - name: ripgrep
+  - name: autofs
+  - name: xclip
+  #  - name: synaptic
+  - name: nodejs
+  - name: npm
+  - name: cargo
+  - name: pkg-config
+  - name: "{{ network_manager_openvpn_package }}"
+  - name: "{{ network_manager_sstp_package }}"
+  - name: "{{ network_manager_l2tp_package }}"
+  - name: "{{ network_manager_l2tp_gnome_package }}"
+  - name: "{{ network_manager_sstp_gnome_package }}"
+  - name: "{{ gnome_shell_extensions_package }}"
+  - name: "{{ network_manager_package }}"
+  - name: "{{ network_manager_openvpn_package }}"
+  - name: "{{ network_manager_openvpn_gnome_package }}"
+  - name: flatpak
+  #  - name: "{{ gnome-software-plugin-flatpak }}"
+  - name: stow
+  - name: fastfetch
+  - name: "{{ python_virtualenv_package }}"
+  - name: obs-studio
+  - name: "{{ ffmpeg_package }}"
+  #- name: ubuntu-restricted-extras
+  - name: audacity
+  - name: gimp
+  - name: kitty
+  - name: btrfs-assistant
+
+pip_install_packages:
+  - name: docker
+  - name: "cython<3.0.0"
+  - name: "pyyaml==5.3.1"
+  - name: docker-compose
+  - name: psutil
+  - name: ansible-core
+  - name: tailscale
+
+snap_packages:
+  - name: kubectl
+    classic: true
+  - name: code
+    classic: true
+  - name: bw
+# diademiemi.flatpak
+flatpak_install_gnome: true
+flatpak_packages:
+  - com.anydesk.Anydesk
+  - md.obsidian.Obsidian
+  - io.kapsa.drive
+
+allow_world_readable_tmpfiles: true
+
+# petermosmans.customize-gnome
+gnome_extensions:
+  - id: 16 #Auto move windows
+  #  - id: 1160  # Dash to panel
+  - id: 1319 # GSConnect
+  - id: 6568 # Simple Break Reminder
+  #  - id: 3628  # Arc Menu
+  - id: 4481 # Forge tiling manager
+  - id: 3843 # Just Perfection
+  - id: 5090 # space bar workspace indicator
+  - id: 6583 # auto power profile
+
+# ironicbadger.docker_compose_generator
+tailscale_args: " --hostname={{ hostname }} --accept-routes --reset --operator={{ primary_user }} --accept-dns=false"
+
+# robertdebock.autofs
+autofs_maps:
+  - name: media_dir
+    mountpoint: /media/Media
+    directories:
+      - path: /media/Media
+        options:
+          - fstype=nfs
+        server: "192.168.1.3:/media/Media"
+
+  - name: personal_dir
+    mountpoint: /media/Personal
+    directories:
+      - path: /media/Personal
+        options:
+          - fstype=nfs
+        server: "192.168.1.3:/media/Personal"
+
+# mountpoints
+
+extra_mountpoints:
+  - {
+      path: /mnt/Media,
+      diskbyid: "192.168.1.3:/media/Media",
+      fs: nfs,
+      opts: "noauto,x-systemd.automount,x-systemd.after=tailscaled.service,x-systemd.idle-timeout=60s,_netdev,soft,intr,timeo=14,rsize=8192,wsize=8192,users",
+    }
+  - {
+      path: /mnt/Personal,
+      diskbyid: "192.168.1.3:/media/Personal",
+      fs: nfs,
+      opts: "noauto,x-systemd.automount,x-systemd.after=tailscaled.service,x-systemd.idle-timeout=60s,_netdev,soft,intr,timeo=14,rsize=8192,wsize=8192,users",
+    }
+#
+# intel-iGPU
+
+intel_graphics_compiler_version: "v2.10.8"
+intel_compute_runtime_version: "25.13.33276.16"
