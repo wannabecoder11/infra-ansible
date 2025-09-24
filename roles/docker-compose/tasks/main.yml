@@ -1,0 +1,47 @@
+- name: Generating list of compose files
+  command: 'ls "compose/{{ hostname }}/"'
+  delegate_to: localhost
+  register: dir_out
+
+#- debug: var=dir_out
+
+- name: copy Docker Compose files
+  copy:
+    src: 'compose/{{ hostname }}/{{ item }}'
+    dest: '/compose'
+  with_items: '{{ dir_out.stdout_lines }}'
+  
+- name: Create docker networks with subnet
+  community.docker.docker_network:
+    name: '{{ docker_network }}'
+    ipam_config:
+      - subnet: '{{ docker_subnet | default }}'
+  when: docker_subnet is defined
+
+- name: Create docker networks with subnet
+  community.docker.docker_network:
+    name: '{{ docker_network }}'
+  when: docker_network is defined
+
+- name: deploy Docker Compose stack
+  community.docker.docker_compose_v2:
+    project_src: '/compose/{{ item }}'
+    pull: always
+    state: present
+  with_items: 
+    - '{{ dir_out.stdout_lines }}'
+#  with_items: '{{ docker_compose_stack }}'
+    
+
+# - name: Prune everything (including non-dangling images)
+#   community.docker.docker_prune:
+#     containers: true
+#     images: true
+#     images_filters:
+#       dangling: false
+#     networks: true
+#     volumes: true
+#     builder_cache: true
+
+- name: Prune everything (including non-dangling images)
+  command: docker system prune -a -f
