@@ -1,0 +1,24 @@
+#tasks:
+    - name: Update Debian-based Systems
+      when: ansible_os_family == 'Debian'
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Update RHEL-based Systems
+      when: ansible_os_family == 'RedHat'
+      yum:
+        name: '*'
+        state: latest
+
+    - name: Update Alpine-based Systems
+      when: ansible_os_family == 'Alpine'
+      apk:
+        update_cache: yes
+        upgrade: yes
+    - name: Update Arch-based Systems
+      when: ansible_os_family == 'Archlinux'
+      community.general.pacman:
+        executable: yay
+        update_cache: true
+        upgrade: true
