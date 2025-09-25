@@ -1,0 +1,20 @@
+---
+- name: Adding aliases to Windows AHK script
+  ansible.builtin.lineinfile:
+    path: /media/Personal/Syncthing/1drive/AHK/hotstrings.ahk
+    line: '::;{{ item.short }}::{{ item.long }}'
+  with_items: '{{ shortcuts }}'
+
+- name: Adding aliases to Gboard sheet
+  ansible.builtin.lineinfile:
+    path: /media/Personal/Syncthing/1drive/AHK/dictionary.txt
+    line: '{{ item.long }}	{{ item.short }}	'
+  with_items: '{{ shortcuts }}'
+
+- name: Creating zip for Gboard
+  community.general.archive:
+    path: /media/Personal/Syncthing/1drive/AHK/dictionary.txt
+    dest: /media/Personal/Syncthing/1drive/AHK/PersonalDictionary-4462898793757627532.zip
+    format: zip
+    owner: mediauser
+    mode: '0644'
