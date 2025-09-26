@@ -1,0 +1,13 @@
+
+
+- name: Installing btrbk
+  package:
+    name: btrbk
+    state: present
+
+- name: copy btrbk docker config
+  copy:
+    src: 'files/btrbk-docker.conf'
+    dest: '/etc/btrbk/'
+
+  
