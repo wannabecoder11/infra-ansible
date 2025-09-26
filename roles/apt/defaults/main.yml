@@ -1,0 +1,19 @@
+---
+
+# List of packages
+apt_package_list: []
+
+# List of packages
+apt_package_list_host: []
+
+# List of packages
+apt_package_list_group: []
+
+# Packages state
+apt_package_state: present
+
+# Update cache?
+apt_package_update_cache: true
+
+# Cache valid time
+apt_package_cache_valid_time: 3600

@@ -1,0 +1,42 @@
+---
+- name: Add apt key
+  ansible.builtin.apt_key:
+    url: "{{ item.key }}"
+    state: "present"
+    keyring: "{{ item.keyring | default(omit) }}"
+  with_items: "{{ apt_repository_repositories }}"
+  when:
+    - item.key is defined
+    - (item.state is not defined or item.state == 'present')
+
+- name: Add apt repo
+  ansible.builtin.apt_repository:
+    codename: "{{ item.codename | default(omit) }}"
+    filename: "{{ item.filename | default(omit) }}"
+    install_python_apt: "{{ item.install_python_apt | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+    repo: "{{ item.repo }}"
+    state: "{{ item.state | default('present') }}"
+    update_cache: "{{ item.update_cache | default(omit) }}"
+    update_cache_retries: "{{ item.update_cache_retries | default(omit) }}"
+    update_cache_retry_max_delay: "{{ item.update_cache_retry_max_delay | default(omit) }}"
+    validate_certs: "{{ item.validate_certs | default(omit) }}"
+  with_items: "{{ apt_repository_repositories }}"
+  register: result
+  notify: Update
+- name: Installing apt packages
+  ansible.builtin.apt:
+    name: "{{ item.apt | default(item.name) }}"
+    state: "{{ item.state | default(apt_package_state) }}"
+    update_cache: "{{ apt_package_update_cache }}"
+    cache_valid_time: "{{ apt_package_cache_valid_time }}"
+    install_recommends: "{{ item.apt_install_recommends | default(omit) }}"
+  when: (item.apt_ignore | default('no')) | string in 'False,false,No,no'
+  with_items: "{{ apt_package_list }}"
+
+- name: Preventing marked packages from being upgraded
+  ansible.builtin.dpkg_selections:
+    name: "{{ item.name.split('=')[0] }}"
+    selection: hold
+  when: (item.hold|default('no')) | string in 'True,true,Yes,yes'
+  with_items: "{{ apt_package_list }}"
