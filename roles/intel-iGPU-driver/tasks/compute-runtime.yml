@@ -1,0 +1,59 @@
+---
+- name: Ensure download directory exists
+  file:
+    path: "{{ download_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Get the latest GitHub release
+  uri:
+    url: "https://api.github.com/repos/intel/compute-runtime/releases/tags/{{ intel_compute_runtime_version }}"
+    method: GET
+    return_content: yes
+  register: github_release
+
+- name: Extract .deb URLs from release assets using selectattr and search
+  debug:
+    msg: "{{ github_release.json.assets | selectattr('browser_download_url', 'search', '\\.deb$|\\.ddeb$') | map(attribute='browser_download_url') | list }}"
+- name: Extract .deb URLs
+  set_fact:
+    deb_urls: "{{ github_release.json.assets | selectattr('browser_download_url', 'search', '\\.deb$|\\.ddeb$') | map(attribute='browser_download_url') | list }}"
+
+- name: Extract .deb URLs from release assets using selectattr and search
+  debug:
+    msg: '{{ deb_urls }}'
+- name: Fail if no .deb files found
+  fail:
+    msg: "No .deb files were found in the latest release."
+  when: deb_urls | length == 0
+
+- name: Download .deb files
+  get_url:
+    url: "{{ item }}"
+    dest: "{{ download_dir }}/{{ item | basename }}"
+  loop: "{{ deb_urls }}"
+
+- name: Install .deb packages
+  command: dpkg -i {{ item }}
+  args:
+    chdir: "{{ download_dir }}"
+  loop: "{{ lookup('fileglob', download_dir + '/*.deb', wantlist=True) }}"
+
+- name: Install .deb packages, second attempt
+  command: dpkg -i {{ item }}
+  args:
+    chdir: "{{ download_dir }}"
+  loop: "{{ lookup('fileglob', download_dir + '/*.deb', wantlist=True) }}"
+
+
+- name: Install .ddeb packages
+  command: dpkg -i {{ item }}
+  args:
+    chdir: "{{ download_dir }}"
+  loop: "{{ lookup('fileglob', download_dir + '/*.ddeb', wantlist=True) }}"
+
+
+- name: Clean up downloaded files (optional)
+  file:
+    path: "{{ download_dir }}"
+    state: absent

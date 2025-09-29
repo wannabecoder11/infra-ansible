@@ -1,0 +1,58 @@
+---
+- name: Ensure download directory exists
+  ansible.builtin.file:
+    path: "{{ download_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Get the latest GitHub release
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/intel/intel-graphics-compiler/releases/tags/{{ intel_graphics_compiler_version }}"
+    method: GET
+    # headers:
+    #   Authorization: "token {{ token }}"
+    return_content: true
+  register: github_release2
+
+- name: Extract .deb URLs from release assets using selectattr and search
+  ansible.builtin.debug:
+    msg: "{{ github_release2.json.assets | selectattr('browser_download_url', 'search', '\\.deb$') | map(attribute='browser_download_url') | list }}"
+- name: Extract .deb URLs
+  ansible.builtin.set_fact:
+    deb_urls: "{{ github_release2.json.assets | selectattr('browser_download_url', 'search', '\\.deb$') | map(attribute='browser_download_url') | list }}"
+
+- name: Extract .deb URLs from release assets using selectattr and search
+  ansible.builtin.debug:
+    msg: '{{ deb_urls }}'
+- name: Fail if no .deb files found
+  ansible.builtin.fail:
+    msg: "No .deb files were found in the latest release."
+  when: deb_urls | length == 0
+
+- name: Remove 'devel' from deb_urls and save to new variable
+  ansible.builtin.set_fact:
+    filtered_deb_urls: "{{ deb_urls | reject('search', 'devel') | list }}"
+
+- name: Download .deb files
+  ansible.builtin.get_url:
+    url: "{{ item }}"
+    dest: "{{ download_dir }}/{{ item | basename }}"
+  loop: "{{ filtered_deb_urls }}"
+
+- name: Install .deb packages
+  ansible.builtin.command: dpkg -i {{ item }}
+  args:
+    chdir: "{{ download_dir }}"
+  loop: "{{ lookup('fileglob', download_dir + '/*.deb', wantlist=True) }}"
+
+- name: Install .deb packages, second attempt
+  ansible.builtin.command: dpkg -i {{ item }}
+  args:
+    chdir: "{{ download_dir }}"
+  loop: "{{ lookup('fileglob', download_dir + '/*.deb', wantlist=True) }}"
+
+
+- name: Clean up downloaded files (optional)
+  ansible.builtin.file:
+    path: "{{ download_dir }}"
+    state: absent

@@ -1,0 +1,7 @@
+---
+github_repo: "intel/compute-runtime"  # Repository name
+download_dir: "/tmp/deb_packages"    # Directory to store .deb files
+token: ""                            # Optional: Add GitHub token if rate-limited
+
+intel_graphics_compiler_version: "v2.10.8"
+intel_compute_runtime_version: "25.13.33276.16"

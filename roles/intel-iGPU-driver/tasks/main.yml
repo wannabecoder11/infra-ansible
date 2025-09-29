@@ -1,0 +1,25 @@
+---
+- name: Installing necessary packages
+  ansible.builtin.apt:
+    package: '{{ item }}'
+    state: present
+  with_items:
+    - ocl-icd-libopencl1
+    - ocl-icd-opencl-dev
+    - intel-media-va-driver-non-free
+    - libmfx-tools
+    - libmfx1
+
+- name: Add option to enable guc for i915
+  ansible.builtin.lineinfile:
+    create: true
+    line: options i915 enable_guc=2
+    path: /etc/modprobe.d/i915.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Importing intel-graphics-compiler.yml
+  ansible.builtin.import_tasks: intel-graphics-compiler.yml
+- name: Importing computer-runtime.yml
+  ansible.builtin.import_tasks: compute-runtime.yml
