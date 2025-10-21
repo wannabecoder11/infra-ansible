@@ -21,7 +21,8 @@
       tags: nvim
     - role: intel-iGPU-driver
       tags: gpu
-
+    - role: prometheus.prometheus.node_exporter
+      tags: monitoring
 - name: Acer-lappi Fedora play
   hosts: acer-lappi-fedora
   become: true
@@ -48,6 +49,8 @@
     - role: "diademiemi.flatpak"
       tags: flatpak
     - role: gikeymarcia.neovim
+    - role: prometheus.prometheus.node_exporter
+      tags: monitoring
 #    - role: intel-iGPU-driver
 #      tags: gpu
 
@@ -67,7 +70,6 @@
     - role: file-sharing
     - role: aisbergg.snapper
     - role: geerlingguy.docker
-    - role: hd-idle
     - role: cron
     - role: btrbk
     - role: docker-compose
@@ -95,7 +97,8 @@
       #tags: tailscale
     - role: backup-script
       tags: backup
-
+    - role: prometheus.prometheus.node_exporter
+      tags: monitoring
 # ----------------------------------------------------------------------------------------
 - name: Oracle public VM play
   hosts: oraclevmpublic
@@ -107,6 +110,8 @@
     - role: geerlingguy.docker
     - role: docker-compose
       tags: compose,updates
+    - role: prometheus.prometheus.node_exporter
+      tags: monitoring
     #- role: artis3n.tailscale
 
 # create ssh key and copy to pbs
