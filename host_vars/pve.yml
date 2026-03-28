@@ -83,19 +83,26 @@ snapraid_runner: true
 
 snapraid_bin_path: /usr/bin/snapraid
 snapraid_parity_disks:
-- { path: /mnt/Parity-Blue, diskbyid: UUID=ce884d65-c4da-4e21-b289-862c4a3a0672, fs: btrfs, opts: "defaults,subvol=@parity", content: false }
+  - path: /mnt/Parity-Blue
+    content: false
+
 snapraid_data_disks:
-- { path: /mnt/Personal-Green, diskbyid: UUID=aa87cb4f-6f3a-48ed-833a-b0b3d9ad6e35, fs: btrfs, opts: "defaults,subvol=@personal", content: true }
-- { path: /mnt/Personal-Blue, diskbyid: UUID=ce884d65-c4da-4e21-b289-862c4a3a0672, fs: btrfs, opts: "defaults,subvol=@personal", content: true }
+  - path: /mnt/Personal-Green
+    content: true
+  - path: /mnt/Personal-Seagate
+    content: true
+snapraid_content_files:
+  - /var/snapraid.content
+ 
 
-
-extra_mountpoints:
+mountpoints:
   - { path: /mnt/Media-Green, diskbyid: UUID=aa87cb4f-6f3a-48ed-833a-b0b3d9ad6e35, fs: btrfs, opts: "defaults,subvol=@media"}
-  - { path: /mnt/Media-Blue, diskbyid: UUID=ce884d65-c4da-4e21-b289-862c4a3a0672, fs: btrfs, opts: "defaults,subvol=@media"}
-  - { path: /mnt/Media-Toshiba, diskbyid: UUID=b9dc0928-66d7-4a0d-a906-4b94c72bf27c, fs: btrfs, opts: "defaults,subvol=@media"}
+
   - { path: /docker, diskbyid: /dev/pve/dockerthinvolume, fs: btrfs, opts: "defaults,subvol=@docker"}
   - { path: /mnt/dockerthinvolume, diskbyid: /dev/pve/dockerthinvolume, fs: btrfs, opts: "defaults,subvol=@docker"}
 
+  - { path: /mnt/Personal-Green, diskbyid: UUID=aa87cb4f-6f3a-48ed-833a-b0b3d9ad6e35, fs: btrfs, opts: "defaults,subvol=@personal"}
+  - { path: /mnt/Parity-Blue, diskbyid: UUID=ce884d65-c4da-4e21-b289-862c4a3a0672, fs: btrfs, opts: "defaults,subvol=@parity"}
 
 fstab_mergerfs:
    - { source: "/mnt/Media*", mountpoint: "/media/Media", fs: fuse.mergerfs, opts: "defaults,nonempty,allow_other,use_ino,moveonenospc=true,category.create=epmfs,dropcacheonclose=true,noforget,inodecalc=path-hash,fsname=Media-mergerfs" }  
