@@ -33,7 +33,15 @@ package_list:
   - name: nano
   - name: restic
 
-## snapraid
+# geerlingguy.nfs
+nfs_exports: [ 
+  "/media/Media 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash,fsid=daf4f409-cf2a-436a-ace5-1337d756378c) 10.147.17.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=198cf32f-59aa-4ccb-99cd-2878760707b6) 100.100.144.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=293a37f4-ea34-4705-992d-0e4b154c8120)",
+  "/media/Personal 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash,fsid=526f2477-b984-457c-a825-e494c5f52315) 10.147.17.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=f28ae69f-b4b0-4003-84fd-c352698441ee) 100.100.144.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=fe1b83a9-ff13-4a1a-b3de-f1f76f7776b2)",
+#"/mnt/docker 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash,fsid=c4836157-87c9-4160-a30d-c53d5108f277)",
+#   "/mnt/docker 10.147.17.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=fb0367de-6c54-4555-99bb-db84aacb2d0e)"
+]
+
+# ironicbadger.snapraid 
 snapraid_config_excludes:
   - "*.unrecoverable"
   - "/tmp/"
@@ -70,16 +78,12 @@ snapraid_config_excludes:
   - "/green/"
   - ".git/"
 
-# geerlingguy.nfs
-nfs_exports: [ 
-  "/media/Media 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash,fsid=daf4f409-cf2a-436a-ace5-1337d756378c) 10.147.17.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=198cf32f-59aa-4ccb-99cd-2878760707b6) 100.100.144.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=293a37f4-ea34-4705-992d-0e4b154c8120)",
-  "/media/Personal 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash,fsid=526f2477-b984-457c-a825-e494c5f52315) 10.147.17.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=f28ae69f-b4b0-4003-84fd-c352698441ee) 100.100.144.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=fe1b83a9-ff13-4a1a-b3de-f1f76f7776b2)",
-#"/mnt/docker 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash,fsid=c4836157-87c9-4160-a30d-c53d5108f277)",
-#   "/mnt/docker 10.147.17.0/24(rw,sync,no_subtree_check,insecure,no_root_squash,fsid=fb0367de-6c54-4555-99bb-db84aacb2d0e)"
-]
 
-# ironicbadger.snapraid & fstab genertor roles
 snapraid_runner: true
+
+snapraid_scrub_schedule:
+  hour: 5
+  weekday: 4
 
 snapraid_bin_path: /usr/bin/snapraid
 snapraid_parity_disks:
@@ -123,34 +127,6 @@ snapper_templates:
         TIMELINE_LIMIT_HOURLY: 2
         TIMELINE_LIMIT_DAILY: 12
 snapper_configs:
-      # - path: /mnt/Media-Blue
-      #   name: Media-Blue
-      #   vars:
-      #     TIMELINE_CREATE: false
-      #     TIMELINE_CLEANUP: true
-      #     NUMBER_LIMIT: 24
-
-      # - path: /mnt/Media-Green
-      #   name: Media-Green
-      #   vars:
-      #     TIMELINE_CREATE: false
-      #     TIMELINE_CLEANUP: true
-      #     NUMBER_LIMIT: 24
-
-      # - path: /mnt/Media-Toshiba
-      #   name: Media-Toshiba
-      #   vars:
-      #     TIMELINE_CREATE: false
-      #     TIMELINE_CLEANUP: true
-      #     NUMBER_LIMIT: 24
-
-      - path: /mnt/Personal-Blue
-        name: Personal-Blue
-        vars:
-          TIMELINE_CREATE: false
-          TIMELINE_CLEANUP: true
-          NUMBER_LIMIT: 42 
-
       - path: /mnt/Personal-Green
         name: Personal-Green
         vars:
@@ -205,8 +181,8 @@ snapraid_io_host: https://hc-ping.com
 cron:
   - { user: root, name: snapper_cron, hour: "*/3", job: "for i in $(ls /etc/snapper/configs/); do snapper -c $i create -c number; done", healthcheck_io_uuid: '{{ hc_snapper_cron_uuid }}'}
 
-# - { user: root, name: 'pve /etc rsync cron', hour: 00, minute: 01, job: 'rsync -aAXHv /etc '{{ primay_user}}'@10.147.17.125:/docker/pve-backup', healthcheck_io_uuid: ""}
-  - { user: root, name: 'btrbk-acer-lappi-snapshot', hour: "*/3", minute: "2", job: "/usr/bin/btrbk -c /etc/btrbk/btrbk-acer-lappi.conf run", healthcheck_io_uuid: "{{ hc_btrbk-acer-lappi-snapshot_uuid }}"}
+  - { user: root, name: 'pve /etc rsync cron', hour: 00, minute: 01, job: 'rsync -aAXHv /etc /docker/pve-backup', healthcheck_io_uuid: ""}
+  # - { user: root, name: 'btrbk-acer-lappi-snapshot', hour: "*/3", minute: "2", job: "/usr/bin/btrbk -c /etc/btrbk/btrbk-acer-lappi.conf run", healthcheck_io_uuid: "{{ hc_btrbk-acer-lappi-snapshot_uuid }}"}
 
 # cron_reboot:
  #- { name: "add cron for pci passthroug",user: root, job: "echo -n 1 > /sys/devices/pci0000\:00/0000\:00\:1a.0/remove"}

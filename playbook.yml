@@ -1,34 +1,55 @@
 ---
 # ----------------------------------------------------------------------------------------
+- name: Basic tasks for all linux systems
+  hosts: linux
+  become: true
+  roles:
+    - role: taktus.fzf
+    - role: jahrik.yay
+      when: ansible_facts['os_family'] == 'Archlinux'
+    # - role: timezone
+    - role: grog.package
+    - role: run-updates
+      tags: updates
+  vars_files:
+    - 'group_vars/{{ ansible_os_family }}.yml'
+    - 'vault/all.yml'
+    - 'vault/{{ ansible_hostname }}.yml'
+
+# ----------------------------------------------------------------------------------------
+
 - name: Dell Ubuntu lappi
   hosts: dell-ubuntu
   become: true
   vars_files:
-    - 'vars/vault.yml'
     - 'group_vars/{{ ansible_os_family }}.yml'
+    - 'vault/all.yml'
+    # - 'vault/{{ ansible_hostname }}.yml'
+
   roles:
-    - role: base
+    # - role: base
     - role: apt
-    - role: workstation
+    # - role: workstation
     - role: petermosmans.customize-gnome
       tags: gnome
     - role: geerlingguy.nfs
-    - role: generate-fstab
+    # - role: generate-fstab
     - role: geerlingguy.docker
     - role: "diademiemi.flatpak"
       tags: flatpak
-    - role: gikeymarcia.neovim
-      tags: nvim
+    # - role: gikeymarcia.neovim
+    #   tags: nvim
     - role: intel-iGPU-driver
       tags: gpu
-    - role: prometheus.prometheus.node_exporter
-      tags: monitoring
+
 - name: Acer-lappi Fedora play
   hosts: acer-lappi-fedora
   become: true
   vars_files:
-    - 'vars/vault.yml'
     - "group_vars/{{ ansible_facts['os_family'] }}.yml"
+    - 'vault/all.yml'
+    # - 'vault/{{ ansible_hostname }}.yml'
+
   roles:
     - role: geerlingguy.pip
     - role: taktus.fzf
@@ -37,20 +58,18 @@
     - role: grog.package
       tags: grog
       ansible_pkg_mgr: dnf
-    - role: base
+    # - role: base
     - role: snaps
       tags: snaps
-    - role: workstation
+    # - role: workstation
     - role: petermosmans.customize-gnome
       tags: gnome
     - role: geerlingguy.nfs
-    - role: generate-fstab
+    # - role: generate-fstab
     - role: geerlingguy.docker
     - role: "diademiemi.flatpak"
       tags: flatpak
     - role: gikeymarcia.neovim
-    - role: prometheus.prometheus.node_exporter
-      tags: monitoring
 #    - role: intel-iGPU-driver
 #      tags: gpu
 
@@ -61,25 +80,26 @@
   become: true
   vars_files:
     - 'group_vars/{{ ansible_os_family }}.yml'
-    - 'vars/vault.yml'
+    - 'vault/all.yml'
+    - 'vault/{{ ansible_hostname }}.yml'
   roles:
-    - role: ironicbadger.proxmox_nag_removal
     - role: geerlingguy.nfs
     - role: ironicbadger.snapraid
     - role: generate-fstab
+      tags: fstab
     - role: file-sharing
     - role: aisbergg.snapper
     - role: geerlingguy.docker
     - role: cron
-    - role: btrbk
-    - role: docker-compose
-      tags: compose,updates
+    # - role: btrbk removed after changing to 4tb with zfs
+    # - role: docker-compose
+      # tags: compose,updates
     - role: artis3n.tailscale
       tags: tailscale
-    - role: backup-script
-      tags: backup
-    - role: gikeymarcia.neovim
-      tags: nvim
+    # - role: backup-script
+      # tags: backup
+    # - role: gikeymarcia.neovim
+    #   tags: nvim
 
 # ----------------------------------------------------------------------------------------
 - name: Oracle VM play
@@ -87,31 +107,32 @@
   become: true
   vars_files:
     - 'group_vars/{{ ansible_os_family }}.yml'
-    - 'vars/vault.yml'
+    - 'vault/all.yml'
+    - 'vault/{{ ansible_hostname }}.yml'
+
   roles:
     - role: geerlingguy.docker
-    - role: generate-fstab
+    # - role: generate-fstab
     - role: docker-compose
       tags: compose,updates
     #- role: artis3n.tailscale
       #tags: tailscale
-    - role: backup-script
-      tags: backup
-    - role: prometheus.prometheus.node_exporter
-      tags: monitoring
+    # - role: backup-script
+      # tags: backup
+
 # ----------------------------------------------------------------------------------------
 - name: Oracle public VM play
   hosts: oraclevmpublic
   become: true
   vars_files:
     - 'group_vars/{{ ansible_os_family }}.yml'
-    - 'vars/vault.yml'
+    - 'vault/all.yml'
+    - 'vault/{{ ansible_hostname }}.yml'
+
   roles:
     - role: geerlingguy.docker
     - role: docker-compose
       tags: compose,updates
-    - role: prometheus.prometheus.node_exporter
-      tags: monitoring
     #- role: artis3n.tailscale
 
 # create ssh key and copy to pbs
@@ -126,8 +147,10 @@
   hosts: proxy
   become: true
   vars_files:
-    - 'vars/vault.yml'
     - 'group_vars/{{ ansible_os_family }}.yml'
+    - 'vault/all.yml'
+    - 'vault/{{ ansible_hostname }}.yml'
+
   roles:
     - role: taktus.fzf
     # - role: artis3n.tailscale # creating issues, need to run up commands with relevent flags and route
@@ -139,24 +162,10 @@
   hosts: shikamaru
   become: true
   vars_files:
-    - 'vars/vault.yml'
     - 'group_vars/{{ ansible_os_family }}.yml'
+    - 'vault/all.yml'
+    - 'vault/{{ ansible_hostname }}.yml'
+
   roles:
     - role: artis3n.tailscale # creating issues, need to run up commands with relevent flags and route
       tags: tailscale
-
-# ----------------------------------------------------------------------------------------
-- name: Basic tasks for all linux systems
-  hosts: linux
-  become: true
-  roles:
-    - role: taktus.fzf
-    - role: jahrik.yay
-      when: ansible_facts['os_family'] == 'Archlinux'
-    - role: timezone
-    - role: grog.package
-    - role: run-updates
-      tags: updates
-  vars_files:
-    - 'vars/vault.yml'
-    - 'group_vars/{{ ansible_os_family }}.yml'
