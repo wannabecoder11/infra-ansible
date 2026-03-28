@@ -26,6 +26,7 @@ roles:
 - alvistack.hibernate
 - petermosmans.customize-gnome
 - taktus.fzf
+- roles-ansible.restic
 collections:
 - prometheus.prometheus
 - vladgh.samba

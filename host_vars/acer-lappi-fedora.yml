@@ -40,6 +40,7 @@ package_update_cache: yes
 ansible_pkg_mgr: dnf
 package_list:
   - name: bash-completion
+  - name: bzip2
   - name: curl
   - name: git
   - name: htop
@@ -113,8 +114,6 @@ pip_install_packages:
 snap_packages:
   - name: kubectl
     classic: true
-  - name: code
-    classic: true
   - name: bw
 # diademiemi.flatpak
 flatpak_install_gnome: true
@@ -132,8 +131,8 @@ gnome_extensions:
   - id: 1319 # GSConnect
   - id: 6568 # Simple Break Reminder
   #  - id: 3628  # Arc Menu
-  - id: 4481 # Forge tiling manager
-  - id: 3843 # Just Perfection
+  # - id: 4481 # Forge tiling manager
+  # - id: 3843 # Just Perfection
   - id: 5090 # space bar workspace indicator
   - id: 6583 # auto power profile
 
@@ -178,3 +177,38 @@ extra_mountpoints:
 
 intel_graphics_compiler_version: "v2.10.8"
 intel_compute_runtime_version: "25.13.33276.16"
+
+
+# ansible-role.restic
+restic_run_check: true
+
+restic_backups:
+  home:
+    name: home
+    repo: pve
+    src: /home
+    scheduled: true
+    schedule_oncalendar: '*-*-* 11:00:00'
+    monitoring_call: "curl -m 10 --retry 5 https://hc-ping.com/ec416d06-5d73-4a57-90a0-8d9344eb8513"
+    exclude:
+      exclude_caches: true
+      exclude:
+          - /path/to/file
+          - .cache
+          - .adobe
+          - .aptitude
+          - .dbus
+          - .fontconfig
+          - .pulse*
+          - .gconfd
+          - .gvfs
+          - .macromedia
+          - .local/share/Trash/
+          - .thumbnails
+          - .config/google-chrome* 
+          # folders already in syncthing
+          - Downloads/
+          - Youtube/
+          - Syncthing/
+          - Onedrive/
+              

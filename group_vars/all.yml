@@ -69,3 +69,16 @@ ntp_timezone: "Asia/Kolkata"
 
 
 tailscale_proxy: ""
+
+# ansible-role.restic
+restic_create_schedule: true
+restic_no_log: false
+restic_repos:
+  pve:
+    location: sftp:{{ restic_user_pve }}@pve:/mnt/backup/restic
+    password: '{{ restic_pve_password }}'
+    init: false
+  acer-lappi-fedora:
+    location: 'sftp:{{ restic_user_acer_lappi }}@100.100.144.34:/data/restic'
+    password: '{{ restic_acer_password }}'
+    init: false

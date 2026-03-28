@@ -9,6 +9,8 @@
       when: ansible_facts['os_family'] == 'Archlinux'
     # - role: timezone
     - role: grog.package
+      ansible_pkg_mgr: dnf
+
     - role: run-updates
       tags: updates
   vars_files:
@@ -48,10 +50,11 @@
   vars_files:
     - "group_vars/{{ ansible_facts['os_family'] }}.yml"
     - 'vault/all.yml'
-    # - 'vault/{{ ansible_hostname }}.yml'
+    - 'vault/{{ ansible_hostname }}.yml'
 
   roles:
-    - role: geerlingguy.pip
+    - role: roles-ansible.restic
+      tags: restic
     - role: taktus.fzf
     - role: jahrik.yay
       when: ansible_facts['os_family'] == 'Archlinux'
