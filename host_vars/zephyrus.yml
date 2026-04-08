@@ -1,0 +1,95 @@
+---
+hostname: zephyrus
+# variables for various configs/dotfiles
+
+enviornment: |
+  'PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/opt/python/bin"'
+
+# apt
+apt_repository_repositories:
+  - repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com jammy main"
+    key: https://apt.releases.hashicorp.com/gpg
+    keyring: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  - repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /"
+    key: https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key
+    keyring: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+  - repo: "deb-src [signed-by=/etc/apt/trusted.gpg.d/fastfetch.gpg] https://ppa.launchpadcontent.net/zhangsongcui3371/fastfetch/ubuntu noble main"
+    key: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xeb65ee19d802f3eb1a13cfe47e2e5cb4d4865f21"
+    keyring: /etc/apt/trusted.gpg.d/fastfetch.gpg
+
+#groptg.package
+package_update_cache: yes
+#apt_package_list:
+package_list:
+  - name: bash-completion
+  - name: bzip2
+  - name: curl
+  - name: git
+  - name: htop
+  - name: iftop
+  - name: iotop
+  - name: "{{ lm_sensors_package }}"
+  - name: net-tools
+  - name: "{{ nfs_server_package }}"
+  - name: nmap
+  - name: "{{ openssh_package }}"
+  - name: "{{ python_package }}"
+  - name: smartmontools
+  - name: sudo
+  - name: tmux
+  - name: tree
+  - name: wget
+  - name: sudo
+  - name: "{{ cron_package | default (cron) }}"
+  - name: nano
+  - name: ansible
+  - name: apt-transport-https
+  - name: ca-certificates
+  - name: gnupg
+  - name: ripgrep
+  - name: xclip
+  - name: pkg-config
+  - name: stow
+  - name: fastfetch
+  - name: "{{ python_virtualenv_package }}"
+
+allow_world_readable_tmpfiles: true
+
+# ironicbadger.docker_compose_generator
+tailscale_args: " --hostname={{ hostname }} --accept-routes --reset --operator={{ primary_user }} --accept-dns=false"
+
+
+# ansible-role.restic
+restic_run_check: true
+
+restic_backups:
+  home:
+    name: home
+    repo: pve
+    src: /home
+    scheduled: true
+    schedule_oncalendar: '*-*-* 11:00:00'
+    monitoring_call: "curl -m 10 --retry 5 https://hc-ping.com/ec416d06-5d73-4a57-90a0-8d9344eb8513"
+    exclude:
+      exclude_caches: true
+      exclude:
+          - /path/to/file
+          - .cache
+          - .adobe
+          - .aptitude
+          - .dbus
+          - .fontconfig
+          - .pulse*
+          - .gconfd
+          - .gvfs
+          - .macromedia
+          - .local/share/Trash/
+          - .thumbnails
+          - .config/google-chrome* 
+          # folders already in syncthing
+          - Downloads/
+          - Youtube/
+          - Syncthing/
+          - Onedrive/
+              

@@ -44,6 +44,27 @@
     - role: intel-iGPU-driver
       tags: gpu
 
+#------------------------------------------------
+
+- name: Asus Zephyrus play 
+  hosts: zephyrus
+  become: true
+  vars_files:
+    - "group_vars/{{ ansible_facts['os_family'] }}.yml"
+    - 'vault/all.yml'
+    - 'vault/{{ ansible_hostname }}.yml'
+
+  roles:
+    - role: roles-ansible.restic
+      tags: restic
+    - role: taktus.fzf
+    - role: grog.package
+    # - role: base
+    - role: snaps
+      tags: snaps
+
+
+#------------------------------------------------
 - name: Acer-lappi Fedora play
   hosts: acer-lappi-fedora
   become: true

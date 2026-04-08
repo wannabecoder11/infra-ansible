@@ -72,6 +72,7 @@ tailscale_proxy: ""
 
 # ansible-role.restic
 restic_create_schedule: true
+restic_user: root   # required to allow reads to all files
 restic_no_log: false
 restic_repos:
   pve:
