@@ -83,3 +83,7 @@ restic_repos:
     location: 'sftp:{{ restic_user_acer_lappi }}@100.100.144.34:/data/restic'
     password: '{{ restic_acer_password }}'
     init: false
+  zephyrus:
+    location: 'sftp:{{ restic_user_zephyrus }}@100.64.237.82:/mnt/c/restic'
+    password: '{{ restic_acer_password }}'
+    init: false

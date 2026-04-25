@@ -53,7 +53,10 @@ package_list:
   - name: stow
   - name: fastfetch
   - name: "{{ python_virtualenv_package }}"
-
+snap_packages:
+  - name: kubectl
+    classic: true
+  - name: bw
 allow_world_readable_tmpfiles: true
 
 # ironicbadger.docker_compose_generator
