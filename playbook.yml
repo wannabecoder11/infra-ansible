@@ -5,11 +5,10 @@
   become: true
   roles:
     - role: taktus.fzf
-    - role: jahrik.yay
-      when: ansible_facts['os_family'] == 'Archlinux'
+    # - role: jahrik.yay
+      # when: ansible_facts['os_family'] == 'Archlinux'
     # - role: timezone
     - role: grog.package
-      ansible_pkg_mgr: dnf
 
     - role: run-updates
       tags: updates
@@ -46,7 +45,7 @@
 
 #------------------------------------------------
 
-- name: Asus Zephyrus play 
+- name: Asus Zephyrus WSL Ubuntu play 
   hosts: zephyrus
   become: true
   vars_files:
@@ -64,6 +63,32 @@
       tags: snaps
 
 
+#------------------------------------------------
+- name: Zephyrus chachyOS play
+  hosts: zephyrus-cachyos
+  become: true
+  vars_files:
+    - "group_vars/{{ ansible_facts['os_family'] }}.yml"
+    - 'vault/all.yml'
+    - 'vault/{{ ansible_hostname }}.yml'
+
+  roles:
+    - role: roles-ansible.restic
+      tags: restic
+    - role: taktus.fzf
+    # - role: grog.package
+      tags: grog
+    # - role: base
+    - role: snaps
+      tags: snaps
+    # - role: workstation
+    - role: petermosmans.customize-gnome
+      tags: gnome
+    - role: geerlingguy.nfs
+    - role: generate-fstab
+    - role: "diademiemi.flatpak"
+      tags: flatpak
+    
 #------------------------------------------------
 - name: Acer-lappi Fedora play
   hosts: acer-lappi-fedora
