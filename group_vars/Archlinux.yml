@@ -24,7 +24,16 @@ vim_package: gvim
 hd_idle_package: hd-idle
 mergerfs_package: mergerfs
 docker_compose_package: docker-compose
+network_manager_openvpn_package: networkmanager-openvpn
 
+# network_manager_l2tp_gnome_package: networkmanager-l2tp-gnome
+# network_manager_sstp_gnome_package: networkmanager-sstp-gnome
+network_manager_package: networkmanager
+network_manager_l2tp_package: networkmanager-l2tp
+network_manager_sstp_package: network-manager-sstp
+# network_manager_openvpn_gnome_package: networkmanager-openvpn-gnome
+gnome_shell_extensions_package: gnome-shell-extensions
+ffmpeg_package: ffmpeg
 #pip_executable: pip3
 #ansible_python_interpreter: /usr/bin/python3
 #docker_install_compose: false

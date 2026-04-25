@@ -19,6 +19,5 @@
     - name: Update Arch-based Systems
       when: ansible_os_family == 'Archlinux'
       community.general.pacman:
-        executable: yay
         update_cache: true
         upgrade: true
