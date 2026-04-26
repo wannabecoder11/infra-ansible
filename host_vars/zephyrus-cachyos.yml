@@ -82,7 +82,7 @@ package_list:
   - name: "{{ network_manager_l2tp_package }}"
   # - name: "{{ network_manager_l2tp_gnome_package }}"
   # - name: "{{ network_manager_sstp_gnome_package }}"
-  - name: "{{ gnome_shell_extensions_package }}"
+  #- name: "{{ gnome_shell_extensions_package }}"
   - name: "{{ network_manager_package }}"
   - name: "{{ network_manager_openvpn_package }}"
   # - name: "{{ network_manager_openvpn_gnome_package }}"
