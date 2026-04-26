@@ -7,8 +7,7 @@
     - role: taktus.fzf
     # - role: jahrik.yay
       # when: ansible_facts['os_family'] == 'Archlinux'
-    # - role: timezone
-    # - role: grog.package
+    - role: timezone
     - role: grog.package
 
     - role: run-updates
@@ -77,15 +76,14 @@
     - role: roles-ansible.restic
       tags: restic
     - role: taktus.fzf
-    # - role: grog.package
+    - role: grog.package
       tags: grog
     # - role: base
-    - role: snaps
-      tags: snaps
+    #- role: snaps
+    #  tags: snaps
     # - role: workstation
-    - role: petermosmans.customize-gnome
-      tags: gnome
-    - role: geerlingguy.nfs
+    #- role: petermosmans.customize-gnome
+    #  tags: gnome
     - role: generate-fstab
     - role: "diademiemi.flatpak"
       tags: flatpak
