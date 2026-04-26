@@ -76,8 +76,6 @@
     - role: roles-ansible.restic
       tags: restic
     - role: taktus.fzf
-    - role: grog.package
-      tags: grog
     # - role: base
     #- role: snaps
     #  tags: snaps
