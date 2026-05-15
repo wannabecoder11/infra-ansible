@@ -10,7 +10,6 @@
       # when: ansible_facts['os_family'] == 'Archlinux'
     - role: timezone
     - role: grog.package
-
     - role: run-updates
       tags: updates
   vars_files:
@@ -57,12 +56,12 @@
   roles:
     - role: roles-ansible.restic
       tags: restic
-    - role: taktus.fzf
     - role: apt
     # - role: base
     - role: snaps
       tags: snaps
-
+    - role: gikeymarcia.neovim
+      tags: neovim
 
 #------------------------------------------------
 - name: Zephyrus chachyOS play
@@ -76,7 +75,6 @@
   roles:
     - role: roles-ansible.restic
       tags: restic
-    - role: taktus.fzf
     # - role: base
     #- role: snaps
     #  tags: snaps
@@ -117,6 +115,7 @@
     - role: "diademiemi.flatpak"
       tags: flatpak
     - role: gikeymarcia.neovim
+      tags: neovim
 #    - role: intel-iGPU-driver
 #      tags: gpu
 
