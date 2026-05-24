@@ -65,7 +65,7 @@
 
 #------------------------------------------------
 - name: Zephyrus chachyOS play
-  hosts: zephyrus-cachyos
+  hosts: cachyos
   become: true
   vars_files:
     - "group_vars/{{ ansible_facts['os_family'] }}.yml"
